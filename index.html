@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan de Estudios Interactivo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+
+</head>
+<body>
+  <div>
+  <h1>Plan de Estudios Interactivo</h1>
+  <div class="switch-container">
+    <li class="nav-item align-items-center d-flex" >
+      <i class="fas fa-sun"></i>
+      <!-- Default switch -->
+      <div class="ms-2 form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="mode-toggle" />
+      </div>
+      <i class="fas fa-moon"></i>
+    </li>
+  </div>
+</div>
+  <div id="app" class="container">
+    <div class="diagram-container">
+      <div v-for="(semesters, yearIndex) in semestersByYear" :key="yearIndex" class="year">
+        <h2>{{ yearIndex + 1 }}° Año</h2>
+        <div v-for="(subjects, semesterIndex) in semesters" :key="semesterIndex" class="semester">
+          
+            <div v-for="subject in subjects" 
+               :key="subject.number" 
+               :class="['node', { 'disabled': subject.disabled }]" 
+               :data-state="subject.state" 
+               @click="handleNodeClick(subject)">
+            <div class="state" @click.stop="toggleState(subject)">
+              {{ subject.stateSymbol }}
+            </div>
+            <i :class="subject.icon"></i>
+            <div>{{ subject.number }}</div>
+            <div>{{ subject.name }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+   <!-- Offcanvas -->
+   <div v-if="selectedSubject" class="offcanvas offcanvas-end show" tabindex="-1" id="subjectOffcanvas" aria-labelledby="offcanvasLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasLabel">{{ selectedSubject.name }}</h5>
+      <button type="button" class="btn-close btn-close-white" @click="closeOffcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <p><strong>Materia:</strong> {{ selectedSubject.name }}</p>
+      <p><strong>Estado:</strong> {{ selectedSubject.state }}</p>
+      <p><strong>Dependencias:</strong></p>
+      <ul>
+        <li v-for="(status, dependency) in selectedSubject.dependencies" :key="dependency">
+          {{ dependency }} - {{ status }}
+        </li>
+      </ul>
+
+      <!-- Emoji de disquete para descargar el programa -->
+      <div v-html="programExist">
+        
+      </div>
+
+
+      <!-- Contenido del programa cargado dinámicamente -->
+      
+      <div v-html="programContent"></div> <!-- Aquí se carga el contenido HTML -->
+    </div>
+  </div>
+</div>
+<div id="legend">
+  <div class="legend-item">
+    <div class="color-box" style="background-color: blue;"></div>
+    <span>No Cursada</span>
+  </div>
+  <div class="legend-item">
+    <div class="color-box" style="background-color: orange;"></div>
+    <span>Cursada</span>
+  </div>
+  <div class="legend-item">
+    <div class="color-box" style="background-color: green;"></div>
+    <span>Aprobada</span>
+  </div>
+</div>
+</div>
+  <script>
+      const toggle = document.getElementById('mode-toggle');
+    toggle.addEventListener('change', () => {
+      document.body.classList.toggle('dark-mode', toggle.checked);
+    });
+    new Vue({
+      el: '#app',
+      data() {
+    return {
+      selectedSubject: null,
+      programContent: '',
+      programExist:'',
+      semestersByYear: 
+      [
+    // Primer grupo
+    [
+        [
+            { number: '001', name: 'Taller de Ciencia Tecnologia y Sociedad', icon: 'fas fa-book', state: 'no-cursada', stateSymbol: '✖', disabled: false, dependencies: [] },
+            { number: '173', name: 'Analisis Matematico I', icon: 'fas fa-calculator', state: 'no-cursada', stateSymbol: '✖', disabled: false, dependencies: [] },
+            { number: '174', name: 'Herramientas Computacionales', icon: 'fas fa-laptop', state: 'no-cursada', stateSymbol: '✖', disabled: false, dependencies: [] },
+            { number: '005', name: 'Ingles', icon: 'fas fa-language', state: 'no-cursada', stateSymbol: '✖', disabled: false, dependencies: [] }
+        ],
+        [
+            { number: '175', name: 'Introduccion a la Programación', icon: 'fas fa-code', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '174': 'cursada' } },
+            { number: '176', name: 'Analisis Matematico II', icon: 'fas fa-calculator', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '173': 'cursada' } },
+            { number: '177', name: 'Algebra', icon: 'fas fa-square-root-alt', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '173': 'cursada' } },
+            { number: '178', name: 'Administracion', icon: 'fas fa-briefcase', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '001': 'cursada' } }
+        ]
+    ],
+    // Segundo grupo
+    [
+        [
+            { number: '179', name: 'Economía', icon: 'fas fa-chart-line', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '001': 'aprobada', '178': 'cursada' } },
+            { number: '180', name: 'Probabilidad y Estadística', icon: 'fas fa-chart-bar', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '177': 'cursada' } },
+            { number: '181', name: 'Recolección de Datos y Análisis Primario de la Información', icon: 'fas fa-database', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '174': 'cursada', '175': 'cursada' } },
+            { number: '182', name: 'Introducción al Conocimiento Contable y Financiero', icon: 'fas fa-money-check-alt', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '178': 'cursada' } }
+        ],
+        [
+            { number: '183', name: 'Inferencia Estadística y Reconocimiento de Patrones', icon: 'fas fa-brain', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '180': 'cursada' } },
+            { number: '184', name: 'Algoritmos y Estructuras de Datos', icon: 'fas fa-code-branch', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '181': 'cursada', '175': 'aprobada' } },
+            { number: '185', name: 'Metodologías de Investigación', icon: 'fas fa-search', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '178': 'cursada' } },
+            { number: '186', name: 'Gestión de Datos', icon: 'fas fa-server', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '181': 'cursada' } }
+        ]
+    ],
+    // Tercer grupo
+    [
+        [
+            { number: '187', name: 'Modelado y Simulación', icon: 'fas fa-project-diagram', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '184': 'cursada', '186': 'cursada', '181': 'aprobada' } },
+            { number: '188', name: 'Visualización de la Información', icon: 'fas fa-chart-pie', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '181': 'cursada' } },
+            { number: '189', name: 'Programación Avanzada', icon: 'fas fa-laptop-code', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '186': 'cursada' } },
+            { number: '190', name: 'Análisis Multivariado', icon: 'fas fa-th', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '184': 'cursada', '173': 'aprobada' } }
+        ],
+        [
+            { number: '191', name: 'Inteligencia Artificial', icon: 'fas fa-robot', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '183': 'cursada' } },
+            { number: '192', name: 'Análisis en Redes Sociales', icon: 'fas fa-network-wired', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '188': 'cursada' } },
+            { number: '193', name: 'Taller I - Big Data y Políticas Públicas', icon: 'fas fa-tools', state: 'no-cursada', stateSymbol: '✖', disabled: false, dependencies: [] },
+            { number: '194', name: 'Taller de Investigación de Mercado', icon: 'fas fa-chart-area', state: 'no-cursada', stateSymbol: '✖', disabled: false, dependencies: [] }
+        ]
+    ],
+    // Cuarto grupo
+    [
+        [
+            { number: '195', name: 'Computación en Nube', icon: 'fas fa-cloud', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '186': 'aprobada', '189': 'cursada' } },
+            { number: '196', name: 'Comercio Electrónico', icon: 'fas fa-shopping-cart', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '194': 'cursada' } },
+            { number: '197', name: 'Taller II - Big Data y Salud', icon: 'fas fa-heartbeat', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '193': 'cursada' } },
+            { number: '198', name: 'Formulación y Evaluación de Proyectos Tecnológicos', icon: 'fas fa-lightbulb', state: 'no-cursada', stateSymbol: '✖', disabled: false, dependencies: [] }
+        ],
+        [
+            { number: '199', name: 'Seminario Final', icon: 'fas fa-graduation-cap', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '187': 'cursada', '188': 'cursada', '189': 'cursada', '190': 'cursada', '191': 'cursada', '192': 'cursada', '193': 'cursada', '194': 'cursada' } },
+            { number: '200', name: 'Práctica Profesional Supervisada', icon: 'fas fa-briefcase', state: 'no-cursada', stateSymbol: '✖', disabled: true, dependencies: { '187': 'cursada', '188': 'cursada', '189': 'cursada', '190': 'cursada', '191': 'cursada', '192': 'cursada', '193': 'cursada', '194': 'cursada' } }
+        ]
+    ]
+]
+
+    }
+  },
+  methods: {
+    toggleState(subject) {
+          const states = ['no-cursada', 'cursada', 'aprobada'];
+          const symbols = ['✖', '⚪', '✔'];
+          const currentIndex = states.indexOf(subject.state);
+          const nextIndex = (currentIndex + 1) % states.length;
+          subject.state = states[nextIndex];
+          subject.stateSymbol = symbols[nextIndex];
+          this.updateDependencies();
+          this.saveStatesToLocalStorage();
+
+        },
+        updateDependencies() {
+          this.semestersByYear.forEach((year) => {
+            year.forEach((semester) => {
+              semester.forEach((subject) => {
+                if (subject.dependencies) {
+                  subject.disabled = !Object.entries(subject.dependencies).every(([dep, status]) => {
+                    const dependencySubject = this.findSubject(dep);
+                    return dependencySubject && (dependencySubject.state === status|| dependencySubject.state === 'aprobada');
+                  });
+                }
+              });
+            });
+          });
+        },
+        findSubject(number) {
+          for (const year of this.semestersByYear) {
+            for (const semester of year) {
+              const subject = semester.find((s) => s.number === number);
+              if (subject) return subject;
+            }
+          }
+          return null;
+        },
+    handleNodeClick(subject) {
+      this.selectedSubject = subject;
+      
+
+      // Cargar el contenido HTML desde el archivo dinámicamente
+      fetch(`programas/${subject.number}.html`)
+        .then(response => {
+          if (response.ok) {
+            return response.text();
+          } else {
+            throw new Error('No se pudo cargar el archivo HTML');
+          }
+        })
+        .then(html => {
+          this.programContent = html; // Cargar el contenido HTML en la variable programContent
+          this.programExist = `
+  <a href="programas/programa${subject.number}.pdf" download>
+    <i class="fas fa-save"></i> Descargar Programa
+  </a>
+`;
+        })
+        .catch(error => {
+          console.error(error);
+          this.programContent = '<p>No se pudo cargar el contenido del programa.</p>';
+          this.programExist="";
+        });
+    },
+    closeOffcanvas() {
+      this.selectedSubject = null;
+      this.programContent = ''; // Limpiar el contenido al cerrar
+    },
+
+    saveStatesToLocalStorage() {
+          const states = {};
+          const enables = {};
+          this.semestersByYear.forEach((year) => {
+            year.forEach((semester) => {
+              semester.forEach((subject) => {
+                states[subject.number] = subject.state;
+               
+              });
+            });
+          });
+          localStorage.setItem('subjectStates', JSON.stringify(states));
+         
+        },
+        loadStatesFromLocalStorage() {
+          const states = JSON.parse(localStorage.getItem('subjectStates') || '{}');
+          const enables = JSON.parse(localStorage.getItem('subjectEnables') || '{}');
+          this.semestersByYear.forEach((year) => {
+            year.forEach((semester) => {
+              semester.forEach((subject) => {
+                 subject.state=states[subject.number];
+                 if (states[subject.number]=== 'cursada') {
+                  subject.stateSymbol = '⚪' ;
+                } 
+                else if (states[subject.number]=== 'aprobada'){
+                  subject.stateSymbol = '✔' ;
+                }
+                else if (states[subject.number]=== 'no-cursada'){
+                  subject.stateSymbol = '✖' ;
+                }  
+         
+              });
+              
+            });
+          });
+          this.updateDependencies();
+        }
+    
+      
+    },
+    created() {
+        this.loadStatesFromLocalStorage();
+      }
+  },
+  
+
+
+    );
+  </script>
+   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

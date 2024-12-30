@@ -1,0 +1,211 @@
+:root {
+    --background-light: #ffffff;
+    --text-light: #f0eef3;
+    --background-dark: #121212;
+    --text-dark: #ffffff;
+    --node-light: #3498db;
+    --node-dark: #1f6f8b;
+    --hover-light: #2c3e50;
+    --hover-dark: #37474f;
+    --border-light: #bdc3c7;
+    --border-dark: #607d8b;
+  }
+  
+  body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--background-light);
+    color: var(--hover-light);
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  body.dark-mode {
+    background-color: var(--background-dark);
+    color: var(--text-dark);
+  }
+  
+  h1 {
+    text-align: center;
+    color: var(--text-dark);
+    background-color: var(--hover-light);
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  body.dark-mode h1 {
+    background-color: var(--hover-dark);
+    color: var(--node-light);
+  }
+  
+  .year h2 {
+    text-align: center;
+    color: var(--hover-light);
+    font-weight: bold;
+    margin-top: 30px;
+    transition: color 0.3s;
+  }
+  
+  body.dark-mode .year h2 {
+    color: var(--hover-dark);
+  }
+  
+  .semester {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px dashed var(--border-light);
+    transition: border-color 0.3s;
+  }
+  
+  body.dark-mode .semester {
+    border-color: var(--border-dark);
+  }
+  
+  .node {
+    position: relative;
+    width: 100%;
+    max-width: 180px;
+    padding: 15px 20px;
+    background-color: var(--node-light);
+    color: var(--text-light);
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s, color 0.3s;
+  }
+  
+  body.dark-mode .node {
+    background-color: var(--node-dark);
+    color: var(--text-dark);
+  }
+  
+  .node:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .node .state {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 14px;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: white;
+    color: var(--hover-light);
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  body.dark-mode .node .state {
+    background-color: var(--hover-dark);
+    color: var(--text-light);
+  }
+  
+  .node[data-state="no-cursada"] {
+    background-color: var(--node-light);
+  }
+  
+  body.dark-mode .node[data-state="no-cursada"] {
+    background-color: var(--node-dark);
+  }
+  
+  .node[data-state="cursada"] {
+    background-color: #f39c12;
+  }
+  
+  body.dark-mode .node[data-state="cursada"] {
+    background-color:  #c79c56;
+  }
+  
+  .node[data-state="aprobada"] {
+    background-color: #2ecc71;
+  }
+  
+  body.dark-mode .node[data-state="aprobada"] {
+    background-color: #27ae60; /* Color verde oscuro para modo oscuro */
+  }
+  .node.disabled {
+    background-color: #95a5a6 !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  
+  .offcanvas .offcanvas-header {
+    background-color: var(--hover-light);
+    color: var(--text-dark);
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  body.dark-mode .offcanvas .offcanvas-header {
+    background-color: var(--hover-dark);
+    color: var(--node-light);
+  }
+  
+  .offcanvas-body {
+    font-size: 16px;
+    
+  
+  }
+  
+  body.dark-mode .offcanvas-body {
+    background-color: rgb(20, 51, 56);
+    color: var(--node-light);
+  }
+  
+  body.dark-mode .accordion {
+    background-color:  var(--text-light);
+  }
+  
+  ul {
+    padding-left: 20px;
+  }
+  
+  ul li {
+    margin-bottom: 5px;
+  }
+  #legend {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  .color-box {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+  }
+  body.dark-mode  #legend {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(7, 10, 45, 0.977);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+
+  }
+  
