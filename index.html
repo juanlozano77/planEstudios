@@ -76,13 +76,14 @@
   </div>
 </div>
 <div id="legend">
+  <button onclick="closeLegend()">X</button>
   <div class="legend-item">
     <div class="color-box" style="background-color: blue;"></div>
-    <span>No Cursada</span>
+    <span>Cursada</span>
   </div>
   <div class="legend-item">
     <div class="color-box" style="background-color: orange;"></div>
-    <span>Cursada</span>
+    <span>Regular</span>
   </div>
   <div class="legend-item">
     <div class="color-box" style="background-color: green;"></div>
@@ -91,7 +92,10 @@
 </div>
 </div>
   <script>
-      const toggle = document.getElementById('mode-toggle');
+    function closeLegend() {
+      document.getElementById('legend').style.display = 'none';
+    }
+    const toggle = document.getElementById('mode-toggle');
     toggle.addEventListener('change', () => {
       document.body.classList.toggle('dark-mode', toggle.checked);
     });
